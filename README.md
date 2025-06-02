@@ -1,12 +1,30 @@
-# Tic Tac Toe Game - Domain Logic
+# Tic Tac Toe Vibes 🎮
 
-A robust implementation of Tic Tac Toe game logic in .NET 9 with comprehensive test coverage.
+A vibe coding playground for developing a robust tic tac toe game engine and user interface.
+
+This project showcases modern .NET 9 development with clean architecture, comprehensive testing, and multiple presentation layers including CLI and Web API interfaces.
+
+## Projects
+
+### 🎯 Core Domain Logic
+- **[TicTacToe.Domain](TicTacToe.Domain/)** - Game engine with complete rule implementation
+- **[TicTacToe.Domain.Tests](TicTacToe.Domain.Tests/)** - Comprehensive test suite with 100% branch coverage
+
+### 🖥️ Command Line Interface  
+- **[TicTacToe.CLI](TicTacToe.CLI/)** - Interactive console game with colorful output
+- **[TicTacToe.CLI.Tests](TicTacToe.CLI.Tests/)** - CLI component testing
+
+### 🌐 Web API
+- **[TicTacToe.WebAPI](TicTacToe.WebAPI/)** - REST API for game management
+- **[TicTacToe.WebAPI.Tests](TicTacToe.WebAPI.Tests/)** - API integration and unit testing
 
 ## Features
 
-- **Complete game logic** following the specification in `docs/spec.md`
+- **Complete game logic** following the specification in [`docs/01-spec-core-game.md`](docs/01-spec-core-game.md)
 - **100% branch coverage** with comprehensive xUnit tests
 - **Modern C# 12** features with nullable reference types enabled
+- **Clean Architecture** with separated concerns
+- **Multiple interfaces** - CLI and Web API
 - **Immutable Move records** for game history tracking
 - **Thread-safe read operations** with defensive copying
 - **Comprehensive XML documentation** for all public APIs
@@ -15,11 +33,11 @@ A robust implementation of Tic Tac Toe game logic in .NET 9 with comprehensive t
 
 ### Core Classes
 
-- **`Player`** - Enum representing X and O players
-- **`GameStatus`** - Enum representing game states (InProgress, X_Won, O_Won, Draw)
-- **`Move`** - Immutable record of a player's move with position and metadata
-- **`GameState`** - Core game state management with move validation and win detection
-- **`TicTacToeGame`** - High-level game facade for easy integration
+- **[`Player`](TicTacToe.Domain/TicTacToeGame.cs)** - Enum representing X and O players
+- **[`GameStatus`](TicTacToe.Domain/TicTacToeGame.cs)** - Enum representing game states (InProgress, X_Won, O_Won, Draw)
+- **[`Move`](TicTacToe.Domain/TicTacToeGame.cs)** - Immutable record of a player's move with position and metadata
+- **[`GameState`](TicTacToe.Domain/TicTacToeGame.cs)** - Core game state management with move validation and win detection
+- **[`TicTacToeGame`](TicTacToe.Domain/TicTacToeGame.cs)** - High-level game facade for easy integration
 
 ### Game Rules
 
@@ -29,83 +47,11 @@ A robust implementation of Tic Tac Toe game logic in .NET 9 with comprehensive t
 4. **Draw condition**: Board full with no winner
 5. **Move validation**: Position must be empty and within bounds
 
-## Usage Example
+## Quick Start
 
-```csharp
-using TicTacToe.Domain;
-
-// Create a new game
-var game = new TicTacToeGame();
-
-// Make moves
-bool success = game.MakeMove(1, 1); // X plays center
-success = game.MakeMove(0, 0);      // O plays top-left
-success = game.MakeMove(0, 1);      // X plays top-center
-success = game.MakeMove(0, 2);      // O plays top-right
-success = game.MakeMove(2, 1);      // X plays bottom-center and wins!
-
-// Check game state
-var state = game.GetGameState();
-Console.WriteLine($"Status: {state.Status}"); // Status: X_Won
-Console.WriteLine($"Moves: {state.MoveHistory.Count}"); // Moves: 5
-
-// Get board state
-char[,] board = state.GetBoard();
-char centerCell = state.GetCell(1, 1); // 'X'
-
-// Start a new game
-game.StartNewGame();
-```
-
-## Building and Testing
+### Playing via CLI
 
 ```bash
-# Build the solution
-dotnet build
-
-# Run all tests
-dotnet test
-
-# Run tests with coverage
-dotnet test --collect:"XPlat Code Coverage"
-
-# Format code
-dotnet format
+cd TicTacToe.CLI
+dotnet run
 ```
-
-## Test Coverage
-
-The test suite achieves **100% branch coverage** with 36 comprehensive test cases covering:
-
-- ✅ All winning combinations (rows, columns, diagonals)
-- ✅ Draw scenarios
-- ✅ Invalid move handling
-- ✅ Boundary conditions
-- ✅ Game state transitions
-- ✅ Move history tracking
-- ✅ Player alternation
-- ✅ Post-game move prevention
-
-## Project Structure
-
-```
-TicTacToe.sln
-├── TicTacToe.Domain/           # Core game logic
-│   ├── TicTacToeGame.cs       # Main implementation
-│   └── TicTacToe.Domain.csproj
-├── TicTacToe.Domain.Tests/     # Comprehensive test suite
-│   ├── UnitTest1.cs           # All test cases
-│   └── TicTacToe.Domain.Tests.csproj
-└── docs/
-    └── spec.md                 # Game specification
-```
-
-## Quality Standards
-
-- **Nullable reference types** enabled for null safety
-- **ImplicitUsings** for cleaner code
-- **TreatWarningsAsErrors** for zero-warning builds
-- **XML documentation** on all public APIs
-- **Expression-bodied members** where appropriate
-- **Guard clauses** for input validation
-- **Microsoft C# coding standards** compliance
