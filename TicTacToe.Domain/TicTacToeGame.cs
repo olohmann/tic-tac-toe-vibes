@@ -9,7 +9,7 @@ public enum Player
     /// The X player, who moves first.
     /// </summary>
     X,
-    
+
     /// <summary>
     /// The O player, who moves second.
     /// </summary>
@@ -25,17 +25,17 @@ public enum GameStatus
     /// The game is still in progress.
     /// </summary>
     InProgress,
-    
+
     /// <summary>
     /// Player X has won the game.
     /// </summary>
     X_Won,
-    
+
     /// <summary>
     /// Player O has won the game.
     /// </summary>
     O_Won,
-    
+
     /// <summary>
     /// The game ended in a draw.
     /// </summary>
@@ -51,22 +51,22 @@ public record Move
     /// Gets the row position (0-2).
     /// </summary>
     public int Row { get; init; }
-    
+
     /// <summary>
     /// Gets the column position (0-2).
     /// </summary>
     public int Col { get; init; }
-    
+
     /// <summary>
     /// Gets the player who made this move.
     /// </summary>
     public Player Player { get; init; }
-    
+
     /// <summary>
     /// Gets the sequence number of this move (1-based).
     /// </summary>
     public int SequenceNumber { get; init; }
-    
+
     /// <summary>
     /// Initializes a new instance of the Move record.
     /// </summary>
@@ -95,12 +95,12 @@ public class GameState
     /// Gets the current player whose turn it is.
     /// </summary>
     public Player CurrentPlayer { get; private set; } = Player.X;
-    
+
     /// <summary>
     /// Gets the current status of the game.
     /// </summary>
     public GameStatus Status { get; private set; } = GameStatus.InProgress;
-    
+
     /// <summary>
     /// Gets a read-only list of all moves made in chronological order.
     /// </summary>
@@ -134,7 +134,7 @@ public class GameState
             throw new ArgumentOutOfRangeException(nameof(row), "Row must be between 0 and 2.");
         if (col < 0 || col > 2)
             throw new ArgumentOutOfRangeException(nameof(col), "Column must be between 0 and 2.");
-            
+
         return _board[row, col];
     }
 
@@ -172,7 +172,7 @@ public class GameState
         // Make the move
         var playerChar = CurrentPlayer == Player.X ? 'X' : 'O';
         _board[row, col] = playerChar;
-        
+
         // Record the move
         var move = new Move(row, col, CurrentPlayer, _moveHistory.Count + 1);
         _moveHistory.Add(move);
@@ -192,7 +192,7 @@ public class GameState
     private void UpdateGameStatus()
     {
         var currentPlayerChar = CurrentPlayer == Player.X ? 'X' : 'O';
-        
+
         // Check for win
         if (HasWinningLine(currentPlayerChar))
         {
@@ -212,8 +212,8 @@ public class GameState
         // Check rows
         for (int row = 0; row < 3; row++)
         {
-            if (_board[row, 0] == playerChar && 
-                _board[row, 1] == playerChar && 
+            if (_board[row, 0] == playerChar &&
+                _board[row, 1] == playerChar &&
                 _board[row, 2] == playerChar)
             {
                 return true;
@@ -223,8 +223,8 @@ public class GameState
         // Check columns
         for (int col = 0; col < 3; col++)
         {
-            if (_board[0, col] == playerChar && 
-                _board[1, col] == playerChar && 
+            if (_board[0, col] == playerChar &&
+                _board[1, col] == playerChar &&
                 _board[2, col] == playerChar)
             {
                 return true;
@@ -232,15 +232,15 @@ public class GameState
         }
 
         // Check diagonals
-        if (_board[0, 0] == playerChar && 
-            _board[1, 1] == playerChar && 
+        if (_board[0, 0] == playerChar &&
+            _board[1, 1] == playerChar &&
             _board[2, 2] == playerChar)
         {
             return true;
         }
 
-        if (_board[0, 2] == playerChar && 
-            _board[1, 1] == playerChar && 
+        if (_board[0, 2] == playerChar &&
+            _board[1, 1] == playerChar &&
             _board[2, 0] == playerChar)
         {
             return true;
