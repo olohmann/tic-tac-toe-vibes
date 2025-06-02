@@ -1,6 +1,57 @@
 @TicTacToe.WebAPI_HostAddress = http://localhost:5118
 
-GET {{TicTacToe.WebAPI_HostAddress}}/weatherforecast/
+### Create a new game
+POST {{TicTacToe.WebAPI_HostAddress}}/api/games
 Accept: application/json
+
+###
+
+### Get game state (replace {gameId} with actual game ID from create response)
+GET {{TicTacToe.WebAPI_HostAddress}}/api/games/{gameId}
+Accept: application/json
+
+###
+
+### Make a move (replace {gameId} with actual game ID)
+POST {{TicTacToe.WebAPI_HostAddress}}/api/games/{gameId}/moves
+Content-Type: application/json
+Accept: application/json
+
+{
+  "position": 0
+}
+
+###
+
+### Make another move (replace {gameId} with actual game ID)
+POST {{TicTacToe.WebAPI_HostAddress}}/api/games/{gameId}/moves
+Content-Type: application/json
+Accept: application/json
+
+{
+  "position": 4
+}
+
+###
+
+### Test invalid move (position already occupied)
+POST {{TicTacToe.WebAPI_HostAddress}}/api/games/{gameId}/moves
+Content-Type: application/json
+Accept: application/json
+
+{
+  "position": 0
+}
+
+###
+
+### Test invalid position (out of range)
+POST {{TicTacToe.WebAPI_HostAddress}}/api/games/{gameId}/moves
+Content-Type: application/json
+Accept: application/json
+
+{
+  "position": 9
+}
 
 ###
