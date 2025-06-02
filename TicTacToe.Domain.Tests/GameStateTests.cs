@@ -17,7 +17,7 @@ public class GameStateTests
         Assert.Equal(Player.X, gameState.CurrentPlayer);
         Assert.Equal(GameStatus.InProgress, gameState.Status);
         Assert.Empty(gameState.MoveHistory);
-        
+
         // Check board is empty
         for (int row = 0; row < 3; row++)
         {
@@ -72,7 +72,7 @@ public class GameStateTests
         Assert.Equal('X', gameState.GetCell(1, 1));
         Assert.Equal(Player.O, gameState.CurrentPlayer);
         Assert.Single(gameState.MoveHistory);
-        
+
         var move = gameState.MoveHistory[0];
         Assert.Equal(1, move.Row);
         Assert.Equal(1, move.Col);
