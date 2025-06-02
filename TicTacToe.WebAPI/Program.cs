@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddOpenApi();
 
+// Add CORS
+builder.Services.AddCors();
+
 // Register game services
 builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
@@ -81,3 +84,8 @@ apiGroup.MapPost("/games/{gameId:guid}/moves", (Guid gameId, MoveRequestDto requ
 .Produces<ErrorResponseDto>(422);
 
 app.Run();
+
+/// <summary>
+/// Partial class to make Program accessible for testing.
+/// </summary>
+public partial class Program { }
