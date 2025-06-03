@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - API Test</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #5A1E76;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .test-section {
+            background: rgba(43, 0, 64, 0.8);
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 600px;
+        }
+        button {
+            background: #F4F6F5;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #C5A0D7;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            overflow-x: auto;
+        }
+        .success {
+            color: #44ff44;
+        }
+        .error {
+            color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe - API Connection Test</h1>
+    
+    <div class="test-section">
+        <h2>API Status</h2>
+        <div id="api-status">Testing connection...</div>
+        <button onclick="testConnection()">Test Connection</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Game Operations</h2>
+        <button onclick="createNewGame()">Create New Game</button>
+        <button onclick="makeTestMove()">Make Move (Center)</button>
+        <button onclick="getGameState()">Get Game State</button>
+        <div id="game-info"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Response Log</h2>
+        <pre id="response-log">API responses will appear here...</pre>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5118/api';
+        let currentGameId = null;
+
+        function log(message, isError = false) {
+            const logElement = document.getElementById('response-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = isError ? 'error' : 'success';
+            logElement.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        async function testConnection() {
+            const statusElement = document.getElementById('api-status');
+            statusElement.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/games`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    statusElement.innerHTML = '<span class="success">✅ API Connected</span>';
+                    log('API connection successful');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusElement.innerHTML = '<span class="error">❌ API Disconnected</span>';
+                log(`API connection failed: ${error.message}`, true);
+            }
+        }
+
+        async function createNewGame() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/games`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                currentGameId = data.gameId;
+                
+                log(`New game created: ${data.gameId}`);
+                log(`Game state: ${JSON.stringify(data, null, 2)}`);
+                
+                updateGameInfo(data);
+            } catch (error) {
+                log(`Failed to create game: ${error.message}`, true);
+            }
+        }
+
+        async function makeTestMove() {
+            if (!currentGameId) {
+                log('No active game. Create a new game first.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/games/${currentGameId}/moves`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ position: 4 })
+                });
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                log(`Move made at position 4`);
+                log(`Updated game state: ${JSON.stringify(data, null, 2)}`);
+                
+                updateGameInfo(data);
+            } catch (error) {
+                log(`Failed to make move: ${error.message}`, true);
+            }
+        }
+
+        async function getGameState() {
+            if (!currentGameId) {
+                log('No active game. Create a new game first.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/games/${currentGameId}`);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                log(`Retrieved game state: ${JSON.stringify(data, null, 2)}`);
+                
+                updateGameInfo(data);
+            } catch (error) {
+                log(`Failed to get game state: ${error.message}`, true);
+            }
+        }
+
+        function updateGameInfo(gameData) {
+            const gameInfoElement = document.getElementById('game-info');
+            gameInfoElement.innerHTML = `
+                <h3>Current Game: ${gameData.gameId}</h3>
+                <p>Current Player: <strong>${gameData.currentPlayer}</strong></p>
+                <p>Status: <strong>${gameData.status}</strong></p>
+                <p>Board: [${gameData.board.map(cell => cell || '_').join(', ')}]</p>
+            `;
+        }
+
+        // Test connection on page load
+        window.addEventListener('load', testConnection);
+    </script>
+</body>
+</html>
